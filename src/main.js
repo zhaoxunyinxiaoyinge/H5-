@@ -1,4 +1,11 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue';
+import App from './App.vue';
+import Vant from 'vant';
 
-createApp(App).mount('#app')
+import 'vant/lib/index.css';
+import './utils/index.js'
+
+let app=createApp(App).mount('#app');
+app.use(Vant);
+app.use(vant.Lazyload);
+
