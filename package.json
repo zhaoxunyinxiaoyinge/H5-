@@ -49,8 +49,11 @@
     "not dead"
   ],
   "lint-staged": {
-    "*.js": "eslint --cache --fix",
-    "**/*": "prettier --write"
+    "src/**/*.js": [
+      "eslint --fix --ext .js",
+      "prettier --write",
+      "git add"
+    ]
   }
 
 }
