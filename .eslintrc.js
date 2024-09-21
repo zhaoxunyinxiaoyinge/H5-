@@ -1,7 +1,8 @@
 module.exports = {
     "env": {
         "browser": true,
-        "es6": true
+        "es6": true,
+    "node":true
     },
     "extends": [
         "eslint:recommended",
@@ -13,11 +14,15 @@ module.exports = {
     },
     "parserOptions": {
         "ecmaVersion": 2018,
-        "sourceType": "module"
+        "sourceType": "module",
+         "parser": "babel-eslint"
     },
     "plugins": [
         "vue"
     ],
     "rules": {
-    }
+        'vue/no-v-model-argument': 'off'   
+    },
+
+
 };

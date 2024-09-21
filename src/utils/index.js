@@ -1,15 +1,9 @@
 (function(){
     function getRem(){
-        let initFontSize=16;
+        let initFontSize=37.5;
         let initWidth=375;
         let width=document.documentElement.clientWidth||initWidth;
-        console.log(width,"width")
-        if(width==1920){
-            document.documentElement.style.fontSize=16+'px';    
-        }else{
-            let fontSize=(width/initWidth)*initFontSize;
-            document.documentElement.style.fontSize=fontSize+'px';    
-        }
+        document.documentElement.style.fontSize=width/initWidth*initFontSize+'px'
     }
     getRem();
     window.addEventListener('resize',getRem);
