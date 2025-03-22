@@ -20,8 +20,8 @@
           </div>
           <div class="reply-content">
             <p class="reply-desc">{{ item.comment_text }}</p>
-            <div class="reply-image">
-              <div class="reply-image-item"><van-image :src="item.comment_img" width="80px" height="80px"></van-image>
+            <div class="reply-image" v-if="item.comment_img">
+              <div class="reply-image-item" :key="index" v-for="(sItem,index) in  item.comment_img.split(',')"><van-image :src="sItem" width="80px" height="80px"></van-image>
               </div>
             </div>
             <div class="reply-score">
@@ -34,17 +34,18 @@
       </van-list>
     </div>
     <div class="bottom">
-      <van-icon class="icon" name="cart-o" :color="'#000'" :badge="4" />
-      <div class="cart-btn">加入购物车</div>
+      <van-icon class="icon" name="cart-o" :color="'#000'" :badge="num"  />
+      <div class="cart-btn" @click="handleAddCart">加入购物车</div>
     </div>
   </div>
 </template>
 <script>
 import { NavBar,Empty} from "vant"
 import { useRouter, useRoute } from "vue-router"
-import { getCommentByGoodsId } from "./../goodDetail/api/index";
-import { ref, onActivated, onDeactivated } from "vue"
+import { getCommentByGoodsId,getGoodsDetail } from "./../goodDetail/api/index";
+import { ref, onActivated, onDeactivated, computed } from "vue"
 import {useUtils} from "./../../utils/useUtils.js"
+import {useStore} from "vuex"
 export default {
   name: "comment-show",
   components: {
@@ -55,9 +56,11 @@ export default {
 
     let router = useRouter();
     const route = useRoute();
+    const store=useStore();
     const comments = ref({ data: [], count: 0 })
     const goodsId=ref();
     const {getFormatTime}=useUtils();
+    const goodsDetail=ref({});
 
     onActivated(async () => {
       document.title='评论列表'
@@ -65,14 +68,24 @@ export default {
       if (params && params.id) {
         goodsId.value=params.id;
         await getComemnts(params.id);
+        await getGoodsDetails(params.id);
       }
-
     })
+
+
 
     onDeactivated(() => {
         comments.value.data=[];
         comments.value.count=0;
+        goodsDetail.value={};
     })
+
+    const getGoodsDetails=async(id)=>{
+     let res= await getGoodsDetail({id});
+     if(res.code==1){
+          goodsDetail.value=res.data[0];
+       }
+    }
 
     const getComemnts = async (goodsId) => {
       let res = await getCommentByGoodsId({ goods_id: goodsId });
@@ -95,11 +108,18 @@ export default {
     const onClickLeft = () => {
       router.back();
     }
+
+    const handleAddCart=()=>{
+        store.commit("addCartGoods",goodsDetail.value);
+    }
+
     return {
+      handleAddCart,
       onClickLeft,
       comments,
       getFormatTime,
-      queryComent
+      queryComent,
+      num:computed(()=>store.getters.cartGoodsNum)
     }
   }
 }

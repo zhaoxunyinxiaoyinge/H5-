@@ -31,7 +31,7 @@
         <van-field v-model="orderInfo.phone" label="手机号码" placeholder="请输入手机号码" />
       </van-cell-group>
     </div>
-    <van-submit-bar :price="orderInfo.amount" button-text="去支付" @submit="onSubmit" />
+    <van-submit-bar :price="orderInfo.amount*100" button-text="去支付" @submit="onSubmit" />
   </div>
 
 </template>

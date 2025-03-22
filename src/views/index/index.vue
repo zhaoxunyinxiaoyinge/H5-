@@ -38,7 +38,7 @@ export default {
         }
 
         const getData = async () => {
-            let res = await getBabaner();
+            let res = await getBabaner({status:1});
             if (res.code == 1) {
                 list.push(...res.data);
             }
@@ -185,7 +185,7 @@ export default {
 .banbaner {
     background-size: cover;
     width: 100%;
-    height: 200px;
+    height: 180px;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
@@ -232,7 +232,7 @@ export default {
 }
 
 .sub-title {
-    margin-left: 11px;
+    /* margin-left: 11px; */
     margin-top: 13px;
     display: flex;
     align-items: center;
@@ -346,20 +346,36 @@ export default {
 }
 
 .all {
-    width: 351px;
+    /* width: 351px; */
     margin: 8px auto 0;
-    display: flex;
+    height: auto;
+    /* display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    align-items: flex-start; */
+    min-height: 100px;
+    overflow: hidden;
 }
 
 .goods-list {
+    float: right;
     border-radius: 11px;
     background-color: #fff;
-    width: 172px;
-    height: 182px;
+    width:calc(50% - 10px);
+    /* height: 182px; */
+    height: auto;
     box-sizing: border-box;
-    margin-bottom: 7px;
+    /* margin-bottom: 7px; */
+    margin: 5px;
+}
+.goods-list:nth-child(2n+1) {
+    float:right;
+    clear: right;
+}
+
+.goods-list:nth-child(2n) {
+    float:left;
+    clear: left;
 }
 
 .goods-sub-title {
@@ -368,7 +384,7 @@ export default {
     align-items: flex-start;
     font-size: 12px;
     color: rgb(50, 51, 52, 1);
-    padding: 10px 0 0 10px;
+    padding: 10px;
 }
 
 .goods-mount {
@@ -417,8 +433,10 @@ export default {
 }
 
 .thubm-img .img {
-    width: 140px;
-    aspect-ratio: 4/3;
+    width:100%;
+    /* aspect-ratio: 4/3;
+     */
+     height: auto;
     padding-top: initial
 }
 </style>

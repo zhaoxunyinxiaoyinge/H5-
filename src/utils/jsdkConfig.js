@@ -1,6 +1,5 @@
 
 export const setConfig = (weixin, signature, timestamp) => {
-  console.log(signature,"signature")
   weixin.config({
     debug: true,
     appId: "wxacd36442f62ad2b9",

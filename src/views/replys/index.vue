@@ -46,7 +46,7 @@
   </div>
 </template>
 <script setup>
-import { defineOptions, ref, onActivated } from "vue";
+import { defineOptions, ref, onActivated, onDeactivated } from "vue";
 import { getDetialByOrderId, getMarkByScore, commitComment,createMarkAndComment} from "./api/index"
 import { uploadFiles } from "./../../serve/api"
 import { useRoute,useRouter } from "vue-router"
@@ -58,6 +58,11 @@ onActivated(async () => {
   const { id } = route.query;
   order_id.value=id;
   await getGoods({ order_id: id })
+})
+
+onDeactivated(async()=>{
+  goodsList.value =[];
+  markList.value={};
 })
 
 const route = useRoute();
@@ -82,12 +87,9 @@ const getGoods = async (params) => {
   })
 }
 
-
-const commentComit = ref([]);
-
-
 const bagComment = async (index, item) => {
   item.isGood = false;
+  item.commet_score=0;
   let res = await getMarkByScore({ score: 0, goods_id: item.goods_id });
   markList.value["goods_id" + item.goods_id] = [];
   markList.value["goods_id" + item.goods_id].push(...res.data);
@@ -95,6 +97,7 @@ const bagComment = async (index, item) => {
 
 const goodComment = async (index, item) => {
   item.isGood = true;
+  item.commet_score=1;
   let res = await getMarkByScore({ score: 1, goods_id: item.goods_id });
   markList.value["goods_id" + item.goods_id] = [];
   markList.value["goods_id" + item.goods_id].push(...res.data);
@@ -114,11 +117,7 @@ const hanleGoodsComment = () => {
   goodsList.value.forEach(item => {
     item.isGood = true;
     arr.push(getMarkByScore({ goods_id: item.goods_id, score: 1 }))
-    commentComit.value.push({
-      commet_score: 1,
-      order_id: item.order_id,
-      goods_id: item.goods_id
-    })
+    item.commet_score=1;
     markList.value["goods_id" + item.goods_id] = [];
   });
 
@@ -163,15 +162,14 @@ const handleCommit = async () => {
   Promise.all(arr).then(res=>{
     let commentMarks=[];
     res.forEach(item=>{
-      let arr=goodsMarkId.get(item.goods_id);
+      let arr=goodsMarkId.get(item.data.goods_id);
       arr.forEach(sItem=>{
-          commentMarks.push(createMarkAndComment({mark_id:sItem,comment_id:item.id}));
+          commentMarks.push(createMarkAndComment({mark_id:sItem,comment_id:item.data.id}));
       })
     })
     return Promise.all(commentMarks)
-  }).then(res=>{
-    router.push({path:'/comment',query:{order_id:order_id.value}})
-    console.log(res,"res");
+  }).then(()=>{
+    router.push({path:'/index'})
   })
 }
 

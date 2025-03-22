@@ -3,7 +3,7 @@
         <van-tabs v-model:active="activeName" sticky @change="handleChange">
             <van-tab title="全部" name="a">
                 <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-                    <van-list offset="50" v-model:loading="loading" :finished="finished" :finished-text="list.length>0&&finished==true?'没有更多了':''"
+                    <van-list  v-model:loading="loading" :finished="finished" :finished-text="list.length>0&&finished==true?'没有更多了':''"
                         @load="onLoad">
                         <div class="content" >
                             <div class="order-list" :key="item.id" v-for="item in list">
@@ -25,7 +25,7 @@
                                 <p class="order-info">
                                     <span class="order-time">下单日期:<time>{{ fiterTime(item.order_time) }}</time></span>
                                     <span class="order-goods-mount"><em>{{ item.order_details.reduce((cur, next) => cur + next.number, 0)
-                                            }}</em>件商品共:<i class="money">￥:{{ item.amount / 100 }}</i></span>
+                                            }}</em>件商品共:<i class="money">￥:{{ item.amount}}</i></span>
                                 </p>
                                 <p class="opreatin">
                                     <button class="del btn" v-if="item.status == 3"> 删除</button>
@@ -63,14 +63,11 @@
                                 <p class="order-info">
                                     <span class="order-time">下单日期:<time>{{ fiterTime(item.order_time) }}</time></span>
                                     <span class="order-goods-mount"><em>{{ item.order_details.reduce((cur, next) => cur + next.number, 0)
-                                            }}</em>件商品共:<i class="money">￥:{{ item.amount / 100 }}</i></span>
+                                            }}</em>件商品共:<i class="money">￥:{{ item.amount}}</i></span>
                                 </p>
                                 <p class="opreatin">
-                                    <button class="del btn" v-if="item.status == 3"> 删除</button>
-                                    <button class="comment btn" @click="handleReply({})"
-                                        v-if="item.status == 3">去评论</button>
-                                    <button class="comment btn" @click="handleReply({})"
-                                        v-else-if="item.status == 1">去支付</button>
+                                    <button class="comment btn" @click="waitPay({order_id:item.id})"
+                                      >去支付</button>
                                 </p>
                             </div>
                         </div> 
@@ -101,7 +98,7 @@
                                 <p class="order-info">
                                     <span class="order-time">下单日期:<time>{{ fiterTime(item.order_time) }}</time></span>
                                     <span class="order-goods-mount"><em>{{ item.order_details.reduce((cur, next) => cur + next.number, 0)
-                                            }}</em>件商品共:<i class="money">￥:{{ item.amount / 100 }}</i></span>
+                                            }}</em>件商品共:<i class="money">￥:{{ item.amount }}</i></span>
                                 </p>
                                 <p class="opreatin">
                                     <button class="del btn" v-if="item.status == 3"> 删除</button>
@@ -139,7 +136,7 @@
                                 <p class="order-info">
                                     <span class="order-time">下单日期:<time>{{ fiterTime(item.order_time) }}</time></span>
                                     <span class="order-goods-mount"><em>{{ item.order_details.reduce((cur, next) => cur + next.number, 0)
-                                            }}</em>件商品共:<i class="money">￥:{{ item.amount / 100 }}</i></span>
+                                            }}</em>件商品共:<i class="money">￥:{{ item.amount}}</i></span>
                                 </p>
                                 <p class="opreatin">
                                     <button class="del btn" v-if="item.status == 3"> 删除</button>
@@ -177,7 +174,7 @@
                                 <p class="order-info">
                                     <span class="order-time">下单日期:<time>{{ fiterTime(item.order_time) }}</time></span>
                                     <span class="order-goods-mount"><em>{{ item.order_details.reduce((cur, next) => cur + next.number, 0)
-                                            }}</em>件商品共:<i class="money">￥:{{ item.amount / 100 }}</i></span>
+                                            }}</em>件商品共:<i class="money">￥:{{ item.amount }}</i></span>
                                 </p>
                                 <p class="opreatin">
                                     <button class="del btn" v-if="item.status == 3"> 删除</button>
@@ -226,16 +223,20 @@ export default {
         })
 
         const onLoad = async () => {
+            listQuery.value.offset+=10;
+            listQuery.value.limit=10;
             await getAllOrders();
         }
 
         const onRefresh = async () => {
+            listQuery.value.offset=0;
+            listQuery.value.limit=10;
             // 清空数据
             list.value.length = 0;
             finished.value = false;
             loading.value = true;
             refreshing.value = false;
-            await onLoad();
+            await getAllOrders();
         }
 
         onMounted(async () => {
@@ -275,6 +276,10 @@ export default {
             rotuer.push({ path: "/reply", query: { id: 2 } });
         }
 
+        const waitPay=(order)=>{
+            rotuer.push({ path: "/pay", query:order });
+        }       
+
 
         const getAllOrders = async () => {
             let res = await getOrder({ ...listQuery.value });
@@ -310,7 +315,8 @@ export default {
             handleReply,
             getAllOrders,
             hasComplete,
-            fiterTime
+            fiterTime,
+            waitPay
         }
     }
 }

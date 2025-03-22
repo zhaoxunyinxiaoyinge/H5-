@@ -30,8 +30,8 @@
               </div>
               <div class="reply-content">
                 <p class="reply-desc">{{ comments.data.comment_text}}</p>
-                <div class="reply-image">
-                  <div class="reply-image-item"><van-image :src="comments.data.comment_img" width="80px" height="80px" ></van-image></div>
+                <div class="reply-image" v-if="comments.data.comment_img">
+                  <div class="reply-image-item" :key="index" v-for="(sItem,index) in  comments.data.comment_img.split(',')"><van-image :src="sItem" width="80px" height="80px" ></van-image></div>
                 </div>
               </div>
               <div class="reply-score">

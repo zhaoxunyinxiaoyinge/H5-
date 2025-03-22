@@ -2,12 +2,13 @@
 import { getSignStr } from "@/serve/api";
 import wx from "weixin-js-sdk";
 import { setConfig } from "@/utils/jsdkConfig.js"
-import Cookies from "js-cookies";
-import { useRouter,useRoute } from "vue-router"
-import { getAccessToken, getUserInfo } from "@/serve/api"
+// import Cookies from "js-cookies";
+import { useRouter } from "vue-router"
+// import { getAccessToken, getUserInfo } from "@/serve/api"
 import { Button, Image, Icon, ConfigProvider, Dialog, Popup, Field, CellGroup, RadioGroup, Radio } from "vant";
-import { ref, reactive, onMounted } from "vue"
+import { ref, reactive, onMounted} from "vue"
 import moment from "moment"
+import Cookies from "js-cookies";
 
 
 export default {
@@ -27,19 +28,21 @@ export default {
     },
     name: 'userCenter',
     setup() {
-        const router = useRoute();
+        // const router = useRoute();
         const routers = useRouter();
         let url = window.location.href.split("#")[0]
         onMounted(async () => {
             document.title = "个人中心";
+            console.log(345)
             let time = moment().unix();
-            await getAutorize();
             let str = await getNonceStr(time);
-            console.log(str,6666)
-            
             setConfig(wx, str.signStr, time);
+
+            let users=JSON.parse(Cookies.getItem("userinfo"));
+           userInfo.value.nickname=users.nickname;
+           userInfo.value.avatar=users.headimgurl;
         })
-        console.log(url,"5")
+ 
 
         /**
          * 
@@ -61,8 +64,8 @@ export default {
         const wenhao = ref();
         const show = ref(false);
         const showList = ref(false);
+        
 
-   
 
         const userInfo = ref({
             username: "xuajeu",
@@ -125,25 +128,25 @@ export default {
          * @params none 
          * @result void
          */
-        let getAutorize = async () => {
-            let code = "";
-            if (!Cookies.getItem('token') && !router.query.code) {
-                let path = window.location.href;
-                let url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxacd36442f62ad2b9"+"&redirect_uri="+path+"&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
-                window.location.replace(url);
-            } else if (!Cookies.getItem("token") && router.query.code) {
-                code = router.query.code;
+        // let getAutorize = async () => {
+        //     let code = "";
+        //     if (!Cookies.getItem('token') && !router.query.code) {
+        //         let path = window.location.href;
+        //         let url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxacd36442f62ad2b9"+"&redirect_uri="+path+"&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+        //         window.location.replace(url);
+        //     } else if (!Cookies.getItem("token") && router.query.code) {
+        //         code = router.query.code;
 
-                let data = await getAccessToken({ code, webToken: true });
-                Cookies.setItem('token', data.data.access_token);
-                Cookies.setItem('code', code);
-                getUserInfos(data.data.access_token, data.data.openid)
-            } else {
-                let userinfo = Cookies.getItem('userinfo');
-                let access_token = Cookies.getItem('token')
-                getUserInfos(access_token, userinfo.openid);
-            }
-        }
+        //         let data = await getAccessToken({ code, webToken: true });
+        //         Cookies.setItem('token', data.data.access_token);
+        //         Cookies.setItem('code', code);
+        //         getUserInfos(data.data.access_token, data.data.openid)
+        //     } else {
+        //         let userinfo = Cookies.getItem('userinfo');
+        //         let access_token = Cookies.getItem('token')
+        //         getUserInfos(access_token, userinfo.openid);
+        //     }
+        // }
 
         /**
          * 
@@ -151,14 +154,14 @@ export default {
          * @param {string} openid -微信公众号 openid 
          * @result userinfo -用户个人信息
         //  */
-        const getUserInfos = async function (token, openid) {
-            try {
-                let res = await getUserInfo({ userInfo: true, openid: openid, lang: "zh-CN", access_token: token });
-                Cookies.setItem("userinfo", res.data.data)
-            } catch (e) {
-                console.log(e)
-            }
-        }
+        // const getUserInfos = async function (token, openid) {
+        //     try {
+        //         let res = await getUserInfo({ userInfo: true, openid: openid, lang: "zh-CN", access_token: token });
+        //         Cookies.setItem("userinfo", res.data.data)
+        //     } catch (e) {
+        //         console.log(e)
+        //     }
+        // }
 
 
 
@@ -263,8 +266,8 @@ export default {
     <van-config-provider :theme-vars="themeVars">
         <div class="page">
             <div class="bg">
-                <van-image round width="66" height="66" src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" />
-                <span class="nickname">赵训银</span>
+                <van-image round width="66" height="66" :src="userInfo.avatar" />
+                <span class="nickname">{{ userInfo.nickname }}</span>
                 <span class="signname">今天是一个好日子</span>
             </div>
             <div class="example-list">

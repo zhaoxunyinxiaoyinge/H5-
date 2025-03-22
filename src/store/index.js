@@ -51,17 +51,16 @@ export const store=createStore({
                 return state.checkGoods.length;
             },
             getCheckedStatus(state){
-                console.log(456);
                 return state.cartGoods.every(item=>item.checked===true)&&state.cartGoods.length>0?true:false;
             },
             getTotalPrice(state){
                 let sum=0;
                 state.cartGoods.forEach(item=>{
                     if(item.checked){
-                sum+=(item.num)*(item.price)
+                        sum+=(item.num)*(parseFloat(item.price))
                     }
             });
-                return sum*100;
+                return sum;
             }  
         },
         actions:{

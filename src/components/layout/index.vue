@@ -4,7 +4,7 @@
             <router-view></router-view>
         </div>
         <div>
-            <van-tabbar :route="true" :placeholder="true" v-model="active" active-color="#ee0a24" inactive-color="#000">
+            <van-tabbar :route="true" :placeholder="true"  active-color="#ee0a24" inactive-color="#000">
                 <van-tabbar-item icon="home-o" replace to="/index">首页</van-tabbar-item>
                 <van-tabbar-item icon="apps-o" replace to="/cartgory">分类</van-tabbar-item>
                 <van-tabbar-item icon="cart-o" replace to="/cart" :badge="num">购物</van-tabbar-item>

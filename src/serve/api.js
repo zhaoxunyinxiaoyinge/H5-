@@ -50,15 +50,29 @@ export const getAccessToken=function(params){
  * 获取当前用户的信息
  *
  */
-
 export function getUserInfo(params){
     return Fetch({
-        url:"/api/sticket",
+        url:"/api/accktoken",
         method:"get",
         params
     })
 }
 
+//判断当前的网页授权页面token 是否有效
+export function getInvidTokenAccken(params){
+    return Fetch({
+        url:"/api/accktoken",
+        method:"get",
+        params
+
+    })
+}
+
+/**
+ * 
+ * @param {*} data 
+ * @returns 
+ */
 export const uploadFiles=(data)=>{
     return Fetch({
         url:"/api/uploadImage",

@@ -1,4 +1,8 @@
+
+import {getUserInfo,getAccessToken} from "./../serve/api";
+import  cookies from "js-cookies";
 import { createWebHistory, createRouter } from "vue-router";
+
 
 let router = createRouter({
     history: createWebHistory(),
@@ -109,13 +113,65 @@ let router = createRouter({
         {
             path:"/pay",
             meta:{
-                title:""
+                title:"支付"
             },
             component:()=>import("@/views/pay/index.vue")
-        }
+        },
+        {
+            path:"/pay_success",
+            meta:{
+                title:"支付"
+            },
+            component:()=>import("@/views/successText/index.vue")
+        },
+
+        {
+            path:"/charge",
+            meta:{
+                title:"充值"
+            },
+            component:()=>import("@/views/charge/index.vue")
+        },
     
     ]
 })
+
+router.beforeEach(async(to,from,next)=>{
+        if(!cookies.getItem("token")){
+          await getAutoreize(to);
+           next()
+        }else{
+        next();
+    }
+})
+
+
+const getAutoreize= async(to)=>{
+    let code = "";
+    if (!cookies.getItem('token') && !to.query.code) {
+        let path = window.location.href;
+        let url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxacd36442f62ad2b9"+"&redirect_uri="+path+"&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+        window.location.replace(url);
+    } else if (!cookies.getItem("token") && to.query.code) {
+        code = to.query.code;
+        let data = await getAccessToken({ code, webToken: true });
+        cookies.setItem('token', data.token);
+        cookies.setItem('code', code);
+        cookies.setItem("openid",data.openid)
+        getUserInfos(data.openid)
+    } 
+}
+
+const getUserInfos=async(openid)=>{
+    try {
+        let res = await getUserInfo({ userInfo: true, openid: openid, lang: "zh-CN" });
+        console.log(res.data,"res");
+        cookies.setItem("userinfo", JSON.stringify(res.data));
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 
 export {
     router

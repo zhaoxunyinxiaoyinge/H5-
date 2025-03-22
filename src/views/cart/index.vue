@@ -49,7 +49,7 @@
             </div>
         </div>
 
-        <van-submit-bar class="bottom-height" tip="请填写正确的收货地址" :price="total" button-text="去结算" :disabled="!hasSubmit" @submit="onSubmit">
+        <van-submit-bar class="bottom-height" tip="请填写正确的收货地址" :price="total*100" button-text="去结算" :disabled="!hasSubmit" @submit="onSubmit">
             <van-checkbox v-model="checkedAll"  @click="handleChecked(checkedAll)">全选</van-checkbox>
         </van-submit-bar>
     </div>
@@ -121,7 +121,7 @@ export default {
 <style scoped>
 .cart {
     padding: 14px 12px;
-    padding-bottom: 51px;
+    padding-bottom: 80px;
 }
 
 .content {
@@ -228,7 +228,7 @@ export default {
 
 <style>
 .bottom-height.van-submit-bar {
-    bottom: 51px
+    bottom: 80px
 }
 
 .van-submit-bar__tip {
