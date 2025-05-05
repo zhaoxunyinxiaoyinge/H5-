@@ -11,5 +11,5 @@ import './utils/index.js';
 import {store} from "./store/index.js";
 
 import { List, PullRefresh } from 'vant';
-createApp(App).use(router).use(Vant).use(List).use(PullRefresh).use(Vant.Lazyload).use(store).mount('#app');
+createApp(App).use(router).use(Vant).use(List).use(PullRefresh).use(store).mount('#app');
 

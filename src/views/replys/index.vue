@@ -137,9 +137,17 @@ const hasCheck = (item, id) => {
 
 const handleButton = (item, sItem) => {
   if (item.isGood) {
-    item.mark.goods.has(sItem.id) ? item.mark.goods.delete(sItem.id) : item.mark.goods.add(sItem.id);
+    if (item.mark.goods.has(sItem.id)) {
+      item.mark.goods.delete(sItem.id);
+    } else {
+      item.mark.goods.add(sItem.id);
+    }
   } else {
-    item.mark.bags.has(sItem.id) ? item.mark.bags.delete(sItem.id) : item.mark.bags.add(sItem.id);
+    if (item.mark.bags.has(sItem.id)) {
+      item.mark.bags.delete(sItem.id);
+    } else {
+      item.mark.bags.add(sItem.id);
+    }
   }
 }
 

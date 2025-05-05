@@ -1,8 +1,7 @@
 import axios from "axios";
-let url = process.env.VUE_APP_BASE_API;
 
 let httpRequest = axios.create({
-    baseURL: url,
+    baseURL: "http://localhost:80",
     timeout: 50000
 })
 
